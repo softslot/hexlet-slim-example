@@ -13,18 +13,19 @@ $container->set('renderer', function () {
 $app = AppFactory::createFromContainer($container);
 $app->addErrorMiddleware(true, true, true);
 
-$courses = [
-    'PHP',
-    'Java',
-    'GO'
-];
+$courses = ['PHP', 'Java', 'GO'];
+$users = ['mike', 'mishel', 'adel', 'keks', 'kamila'];
 
 $app->get('/', function ($request, $response) {
     return $response->write('Welcome to Slim!');
 });
 
-$app->get('/users', function ($request, $response) {
-    return $response->write('GET /users');
+$app->get('/users', function ($request, $response) use ($users) {
+    $search = $request->getQueryParam('search');
+    $filteredUsers = array_filter($users, fn($user) => str_contains($user, $search));
+    $params = ['users' => $filteredUsers];
+
+    return $this->get('renderer')->render($response, 'users/index.phtml', $params);
 });
 
 $app->post('/users', function ($request, $response) {
