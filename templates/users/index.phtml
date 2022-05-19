@@ -1,0 +1,16 @@
+<div>
+    <form action="/users" method="get">
+        <label>
+            Поиск пользователей:
+            <input type="text" name="search" value="">
+        </label>
+        <input type="submit" value="Поиск">
+    </form>
+</div>
+<div>
+    <ul>
+        <?php foreach ($users as $user) : ?>
+        <li><?= $user ?></li>
+        <?php endforeach; ?>
+    </ul>
+</div>
