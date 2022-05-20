@@ -4,6 +4,8 @@ require __DIR__ . '/../vendor/autoload.php';
 
 use Slim\Factory\AppFactory;
 use DI\Container;
+use App\UserValidator;
+use App\UserRepository;
 
 $container = new Container();
 $container->set('renderer', function () {
@@ -29,7 +31,27 @@ $app->get('/users', function ($request, $response) use ($users) {
 });
 
 $app->post('/users', function ($request, $response) {
-    return $response->withStatus(302);
+    $user = $request->getParsedBodyParam('user');
+    $user['id'] = uniqid();
+    $errors = UserValidator::validate($user);
+    if (count($errors) > 0) {
+        $params = ['user' => $user, 'errors' => $errors];
+        return $this->get('renderer')->render($response, 'users/new.phtml', $params);
+    }
+
+    UserRepository::save($user);
+
+    return $response->withRedirect('/users', 302);
+});
+
+$app->get('/users/new', function ($request, $response) {
+    $params = [
+        'errors' =>
+            ['nickname' => ''],
+            ['email' => '']
+        ];
+
+    return $this->get('renderer')->render($response, 'users/new.phtml', $params);
 });
 
 $app->get('/users/{id}', function ($request, $response, $args) {
