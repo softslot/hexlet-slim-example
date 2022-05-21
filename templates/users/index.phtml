@@ -1,3 +1,12 @@
+<?php if (isset($messages['success'])): ?>
+    <div style="color: green">
+        <ul>
+        <?php foreach ($messages['success'] as $message): ?>
+            <li><?= $message ?></li>
+        <?php endforeach; ?>
+        </ul>
+    </div>
+<?php endif; ?>
 <div>
     <form action="/users" method="get">
         <label>

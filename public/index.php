@@ -7,11 +7,16 @@ use DI\Container;
 use App\UserValidator;
 use App\UserRepository;
 
+session_start();
+
 $repo = new UserRepository();
 
 $container = new Container();
 $container->set('renderer', function () {
     return new \Slim\Views\PhpRenderer(__DIR__ . '/../templates');
+});
+$container->set('flash', function () {
+    return new \Slim\Flash\Messages();
 });
 
 $app = AppFactory::createFromContainer($container);
@@ -30,7 +35,8 @@ $app->get('/users', function ($request, $response) use ($repo) {
         return str_contains(mb_strtolower($user['nickname']), mb_strtolower($search));
     });
 
-    $params = ['users' => $filteredUsers];
+    $messages = $this->get('flash')->getMessages();
+    $params = ['users' => $filteredUsers, 'messages' => $messages];
 
     return $this->get('renderer')->render($response, 'users/index.phtml', $params);
 })->setName('users');
@@ -57,6 +63,7 @@ $app->post('/users', function ($request, $response) use ($router, $repo) {
     }
 
     $repo->save($user);
+    $this->get('flash')->addMessage('success', 'User was added successfully');
 
     return $response->withRedirect($router->urlFor('users'), 302);
 });
