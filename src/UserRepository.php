@@ -6,7 +6,7 @@ class UserRepository
 {
     private const PATH_TO_JSON = __DIR__ . '/../db/users.json';
 
-    private array $users;
+    private array $users = [];
 
     public function __construct()
     {
@@ -17,6 +17,11 @@ class UserRepository
     {
         $this->users[] = $user;
         $this->putUsersToJsonFile();
+    }
+
+    public function getAllUsers(): array
+    {
+        return $this->users;
     }
 
     private function getUsersFromJsonFile(): array
