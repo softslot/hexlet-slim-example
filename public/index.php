@@ -26,7 +26,10 @@ $app->get('/', function ($request, $response) {
 $app->get('/users', function ($request, $response) use ($repo) {
     $users = $repo->getAllUsers();
     $search = $request->getQueryParam('search');
-    $filteredUsers = array_filter($users, fn($user) => str_contains($user['nickname'], $search));
+    $filteredUsers = array_filter($users, function ($user) use ($search) {
+        return str_contains(mb_strtolower($user['nickname']), mb_strtolower($search));
+    });
+
     $params = ['users' => $filteredUsers];
 
     return $this->get('renderer')->render($response, 'users/index.phtml', $params);
