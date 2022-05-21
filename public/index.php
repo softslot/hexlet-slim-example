@@ -20,7 +20,7 @@ $users = ['mike', 'mishel', 'adel', 'keks', 'kamila'];
 
 $app->get('/', function ($request, $response) {
     return $response->write('Welcome to Slim!');
-});
+})->setName('home');
 
 $app->get('/users', function ($request, $response) use ($users) {
     $search = $request->getQueryParam('search');
@@ -28,9 +28,21 @@ $app->get('/users', function ($request, $response) use ($users) {
     $params = ['users' => $filteredUsers];
 
     return $this->get('renderer')->render($response, 'users/index.phtml', $params);
+})->setName('users');
+
+$router = $app->getRouteCollector()->getRouteParser();
+
+$app->get('/users/new', function ($request, $response) {
+    $params = [
+        'errors' =>
+            ['nickname' => ''],
+            ['email' => '']
+        ];
+
+    return $this->get('renderer')->render($response, 'users/new.phtml', $params);
 });
 
-$app->post('/users', function ($request, $response) {
+$app->post('/users', function ($request, $response) use ($router) {
     $user = $request->getParsedBodyParam('user');
     $user['id'] = uniqid();
     $errors = UserValidator::validate($user);
@@ -41,17 +53,7 @@ $app->post('/users', function ($request, $response) {
 
     UserRepository::save($user);
 
-    return $response->withRedirect('/users', 302);
-});
-
-$app->get('/users/new', function ($request, $response) {
-    $params = [
-        'errors' =>
-            ['nickname' => ''],
-            ['email' => '']
-        ];
-
-    return $this->get('renderer')->render($response, 'users/new.phtml', $params);
+    return $response->withRedirect($router->urlFor('users'), 302);
 });
 
 $app->get('/users/{id}', function ($request, $response, $args) {
