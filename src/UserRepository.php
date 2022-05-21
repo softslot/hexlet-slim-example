@@ -24,6 +24,17 @@ class UserRepository
         return $this->users;
     }
 
+    public function getUserById(string $id): array
+    {
+        foreach ($this->users as $user) {
+            if ($user['id'] === $id) {
+                return $user;
+            }
+        }
+
+        return [];
+    }
+
     private function getUsersFromJsonFile(): array
     {
         return json_decode($this->getJsonFile(), true);
