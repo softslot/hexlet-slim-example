@@ -18,15 +18,15 @@ $app = AppFactory::createFromContainer($container);
 $app->addErrorMiddleware(true, true, true);
 
 $courses = ['PHP', 'Java', 'GO'];
-$users = ['mike', 'mishel', 'adel', 'keks', 'kamila'];
 
 $app->get('/', function ($request, $response) {
     return $response->write('Welcome to Slim!');
 })->setName('home');
 
-$app->get('/users', function ($request, $response) use ($users) {
+$app->get('/users', function ($request, $response) use ($repo) {
+    $users = $repo->getAllUsers();
     $search = $request->getQueryParam('search');
-    $filteredUsers = array_filter($users, fn($user) => str_contains($user, $search));
+    $filteredUsers = array_filter($users, fn($user) => str_contains($user['nickname'], $search));
     $params = ['users' => $filteredUsers];
 
     return $this->get('renderer')->render($response, 'users/index.phtml', $params);
