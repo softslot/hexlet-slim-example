@@ -7,6 +7,8 @@ use DI\Container;
 use App\UserValidator;
 use App\UserRepository;
 
+$repo = new UserRepository();
+
 $container = new Container();
 $container->set('renderer', function () {
     return new \Slim\Views\PhpRenderer(__DIR__ . '/../templates');
@@ -42,7 +44,7 @@ $app->get('/users/new', function ($request, $response) {
     return $this->get('renderer')->render($response, 'users/new.phtml', $params);
 });
 
-$app->post('/users', function ($request, $response) use ($router) {
+$app->post('/users', function ($request, $response) use ($router, $repo) {
     $user = $request->getParsedBodyParam('user');
     $user['id'] = uniqid();
     $errors = UserValidator::validate($user);
@@ -51,7 +53,7 @@ $app->post('/users', function ($request, $response) use ($router) {
         return $this->get('renderer')->render($response, 'users/new.phtml', $params);
     }
 
-    UserRepository::save($user);
+    $repo->save($user);
 
     return $response->withRedirect($router->urlFor('users'), 302);
 });

@@ -6,24 +6,30 @@ class UserRepository
 {
     private const PATH_TO_JSON = __DIR__ . '/../db/users.json';
 
-    public static function save(array $user): void
+    private array $users;
+
+    public function __construct()
     {
-        $users = self::getUsersFromJsonFile();
-        $users[] = $user;
-        self::putUsersToJsonFile($users);
+        $this->users = $this->getUsersFromJsonFile();
     }
 
-    private static function getUsersFromJsonFile(): array
+    public function save(array $user): void
     {
-        return json_decode(self::getJsonFile(), true);
+        $this->users[] = $user;
+        $this->putUsersToJsonFile();
     }
 
-    private static function putUsersToJsonFile(array $users): void
+    private function getUsersFromJsonFile(): array
     {
-        file_put_contents(self::PATH_TO_JSON, json_encode($users));
+        return json_decode($this->getJsonFile(), true);
     }
 
-    private static function getJsonFile(): string
+    private function putUsersToJsonFile(): void
+    {
+        file_put_contents(self::PATH_TO_JSON, json_encode($this->users));
+    }
+
+    private function getJsonFile(): string
     {
         $json = file_get_contents(self::PATH_TO_JSON);
         if ($json === false) {
