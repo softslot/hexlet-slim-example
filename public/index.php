@@ -58,8 +58,15 @@ $app->post('/users', function ($request, $response) use ($router, $repo) {
     return $response->withRedirect($router->urlFor('users'), 302);
 });
 
-$app->get('/users/{id}', function ($request, $response, $args) {
-    $params = ['id' => $args['id'], 'nickname' => 'user-' . $args['id']];
+$app->get('/users/{id}', function ($request, $response, $args) use ($repo) {
+    $user = $repo->getUserById($args['id']);
+    if (empty($user)) {
+        return $response->withStatus(404)
+            ->withHeader('Content-Type', 'text/html')
+            ->write('Page not found');
+    }
+
+    $params = ['user' => $user];
 
     return $this->get('renderer')->render($response, 'users/show.phtml', $params);
 });
