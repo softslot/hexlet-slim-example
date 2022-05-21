@@ -18,8 +18,11 @@
 </div>
 <div>
     <ul>
-        <?php foreach ($users as ['id' => $id, 'nickname' => $nickname]) : ?>
-        <li><a href="/users/<?= $id ?>"><?= $nickname ?></a></li>
+        <?php foreach ($users as ['id' => $id, 'nickname' => $nickname, 'email' => $email]) : ?>
+        <li>
+            <a href="/users/<?= $id ?>"><?= htmlspecialchars($nickname) ?></a>
+            (<?= htmlspecialchars($email) ?>)
+        </li>
         <?php endforeach; ?>
     </ul>
 </div>
