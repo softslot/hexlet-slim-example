@@ -13,26 +13,23 @@ class UserRepository
         $this->users = $this->getUsersFromJsonFile();
     }
 
-    public function save(array $user): void
+    public function save(array $data): void
     {
-        $this->users[] = $user;
+        if (!isset($data['id'])) {
+            $data['id'] = uniqid();
+        }
+        $this->users[$data['id']] = $data;
         $this->putUsersToJsonFile();
     }
 
-    public function getAllUsers(): array
+    public function all(): array
     {
         return $this->users;
     }
 
-    public function getUserById(string $id): array
+    public function find(string $id): array
     {
-        foreach ($this->users as $user) {
-            if ($user['id'] === $id) {
-                return $user;
-            }
-        }
-
-        return [];
+        return $this->users[$id] ?? [];
     }
 
     private function getUsersFromJsonFile(): array
