@@ -129,6 +129,24 @@ $app->delete('/users/{id}', function ($request, $response, $args) use ($router) 
     return $response->withRedirect($router->urlFor('users'), 302);
 });
 
+$app->get('/login', function ($request, $response) {
+    return $this->get('renderer')->render($response, 'auth/login.phtml');
+});
+
+$app->post('/login', function ($request, $response) use ($router) {
+    $email = $request->getParsedBodyParam('email');
+    $_SESSION['email'] = $email;
+
+    return $response->withRedirect($router->urlFor('users'), 302);
+});
+
+$app->delete('/logout', function ($request, $response) use ($router) {
+    $_SESSION = [];
+    session_destroy();
+
+    return $response->withRedirect($router->urlFor('users'), 302);
+});
+
 $app->get('/courses', function ($request, $response) use ($courses) {
     $params = [
         'courses' => $courses

@@ -26,3 +26,14 @@
         <?php endforeach; ?>
     </ul>
 </div>
+<hr>
+<div>
+    <?php if (!isset($_SESSION['email'])) : ?>
+        <p>Nothing to display, sorry :( (<a href="/login">login</a>)</p>
+    <?php else : ?>
+        <form action="/logout" method="post">
+            <input type="hidden" name="_METHOD" value="DELETE">
+            <input type="submit" value="Logout">
+        </form>
+    <?php endif; ?>
+</div>
