@@ -32,6 +32,12 @@ class UserRepository
         return $this->users[$id] ?? [];
     }
 
+    public function destroy(string $id): void
+    {
+        unset($this->users[$id]);
+        $this->putUsersToJsonFile();
+    }
+
     private function getUsersFromJsonFile(): array
     {
         return json_decode($this->getJsonFile(), true);

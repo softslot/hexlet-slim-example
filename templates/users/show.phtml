@@ -1,3 +1,9 @@
 <div><?= htmlspecialchars($user['id']) ?></div>
 <div><?= htmlspecialchars($user['nickname']) ?></div>
 <div><a href="/users/<?= $user['id'] ?>/edit">Edit</a></div>
+<div>
+    <form action="/users/<?= htmlspecialchars($user['id']) ?>" method="post">
+        <input type="hidden" name="_METHOD" value="DELETE">
+        <input type="submit" value="Remove">
+    </form>
+</div>

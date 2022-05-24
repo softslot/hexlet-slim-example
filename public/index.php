@@ -120,6 +120,15 @@ $app->get('/users/{id}', function ($request, $response, $args) {
     return $this->get('renderer')->render($response, 'users/show.phtml', $params);
 });
 
+$app->delete('/users/{id}', function ($request, $response, $args) use ($router) {
+    $id = $args['id'];
+    $repo = new UserRepository();
+    $repo->destroy($id);
+    $this->get('flash')->addMessage('success', 'User has been deleted');
+
+    return $response->withRedirect($router->urlFor('users'), 302);
+});
+
 $app->get('/courses', function ($request, $response) use ($courses) {
     $params = [
         'courses' => $courses
